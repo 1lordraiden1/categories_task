@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-         $categories = Category::whereNull('parent_id')->with('children')->get();
+        $categories = Category::whereNull('parent_id')->with('children')->get();
         return view('categories')->with('categories', $categories);
     }
     public function create()
@@ -22,7 +22,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:categories|max:255',
+            'title' => 'required|unique:categories,title|max:255',
             'parent_id' => 'nullable'
         ]);
 
@@ -36,6 +36,17 @@ class CategoryController extends Controller
             ]
         );
         return redirect('/')->with('status', 'success');
+    }
+
+    public function destroy($id)
+    {
+        if (!$category = Category::find($id)) {
+            return response()->json([], 404);
+        }
+        if (!$deleted = $category->delete()) {
+            return response()->json([], 403);
+        }
+        return response()->json([], 201);
     }
 
 
