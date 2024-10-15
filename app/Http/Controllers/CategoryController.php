@@ -4,14 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use PhpParser\JsonDecoder;
 use Validator;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::whereNull('parent_id')->with('children')->get();
-        return view('categories')->with('categories', $categories);
+
+        /*  $categories = Category::whereNull('parent_id')->with('children')->get(); */
+        $result = Category::getCategories();
+
+
+        /*  $tree = json_decode($result); */
+
+
+        $n = $result;
+
+        var_dump($n);
+
+
+
+
+
+
+
+
+        /* return view('categories')->with('categories', $categories); */
     }
     public function create()
     {
@@ -27,7 +46,9 @@ class CategoryController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('/create')->with('status', 'failed');
+            return redirect('/create')
+                ->with('status', 'failed')
+                ->withErrors($validator->errors());
         }
         Category::create(
             [

@@ -36,7 +36,6 @@
         @if (!empty($categories))
             @foreach ($categories as $category)
                 <li class="flex justify-between gap-x-6 p-6 py-5">
-                    <div class="flex min-w-0 gap-x-4">
                         <dialog id="myDialog">
                             <div class="relative z-10" aria-labelledby="slide-over-title" role="dialog"
                                 aria-modal="true">
@@ -65,7 +64,7 @@
                                 </p>
                             </div>
                         </button>
-                    </div>
+
                     <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                         <div>
                             <a href=""> edit </a>
