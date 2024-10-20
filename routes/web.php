@@ -17,5 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CategoryController::class, 'index']);
 Route::get('/create', [CategoryController::class, 'create'])->name('view_create');
 Route::post('/create', [CategoryController::class, 'store'])->name('create');
-Route::delete('/create/{$category}', [CategoryController::class, 'destroy'])->name('delete_category');
+Route::delete('/category/{id}', [CategoryController::class, 'destroy'])->name('delete_category');
 

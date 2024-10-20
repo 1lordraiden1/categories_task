@@ -1,52 +1,38 @@
 @props(['category'])
 
+<details>
+    <summary> {{ $category->title }} ({{ $category->id }})
+        <a href=""> edit </a>
+        <button onclick="confirmDelete({{ $category->id }} , '{{ $category->title }}')"> delete
+        </button>
+    </summary>
+    <div>
 
-{{ $category->title }} ({{ $category->id }})
-<ul>
-    @foreach ($category->children as $child)
-        <li><x-category :category="$child"></x-category></li>
-    @endforeach
-</ul>
+
+    </div>
+    <ul class="">
+        @foreach ($category->children as $child)
+            <x-category :category="$child"></x-category>
+        @endforeach
+    </ul>
+</details>
+
+
 
 <script>
-    $(document).ready(function() {
-        $(".multiLevelDropdownButton").each(function(_, dropdown) {
-            const dropdownMenu = $(dropdown).find("> .multi-dropdown")[0];
-            let popperInstance = null;
-
-            function create() {
-                popperInstance = Popper.createPopper(dropdown, dropdownMenu, {
-                    placment: 'auto-start',
-                    strategy: 'absolute',
-                    modifires: [{
-                        name: "flip",
-                        options: {
-                            fallbackPlacements: ["top", "bottom", "left", "right"],
-                        }
-                    }]
-                });
-            }
-
-            function destroy() {
-                if (popperInstance) {
-                    popperInstance.destroy();
-                    popperInstance = null;
-                }
-            }
-
-            function show() {
-                $(dropdownMenu).attr('data-show', "");
-                create();
-            }
-
-            function hide() {
-                $(dropdownMenu).removeAttr('data-show');
-                destroy();
-            }
-
-            $(dropdown).on("mouseenter focus", show);
-            $(dropdown).on("mouseenter blur", hide);
-
-        });
-    });
+    function confirmDelete(id, title) {
+        if (confirm("Are you sure you want to delete " + title + " ?")) {
+            console.log(id);
+            fetch('{{ route('delete_category', ':id') }}'.replace(':id', id), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            })
+            console.log("success");
+        }
+    }
+    // Close the modal dialog
 </script>

@@ -12,25 +12,17 @@ class CategoryController extends Controller
     public function index()
     {
 
-        /*  $categories = Category::whereNull('parent_id')->with('children')->get(); */
-        $result = Category::getCategories();
+        $categories = Category::whereNull('parent_id')->with('children')->get();
+        /*  $result = Category::getCategories();
+         array_walk(
+             $result,
+             function ($r) use (&$result) {
+                 $r->category_json = json_decode($r->category_json, true,);
+             }
+         );
 
-
-        /*  $tree = json_decode($result); */
-
-
-        $n = $result;
-
-        var_dump($n);
-
-
-
-
-
-
-
-
-        /* return view('categories')->with('categories', $categories); */
+         return $result; */
+        return view('categories')->with('categories', $categories);
     }
     public function create()
     {
@@ -67,7 +59,7 @@ class CategoryController extends Controller
         if (!$deleted = $category->delete()) {
             return response()->json([], 403);
         }
-        return response()->json([], 201);
+        return redirect('/');
     }
 
 

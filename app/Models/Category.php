@@ -20,6 +20,6 @@ class Category extends Model
 
     public static function getCategories()
     {
-        return DB::select("SELECT GetNestedCategories() as categories")[0]->categories;
+        return DB::select("CALL tree()");
     }
 }

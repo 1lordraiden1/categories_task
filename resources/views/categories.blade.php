@@ -31,48 +31,37 @@
 
     </header>
 
+    {{-- <dialog id="myDialog">
+        <div class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div
+                        class="relative transform overflow-hidden rounded-lg bg-blue text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <div class="bg-blue px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                            <x-category :category="$category"></x-category>
+                            <i id="closeDialog">X</i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <button id="openDialog">
+        <div class="min-w-0 flex-auto">
+            <p class="text-sm font-semibold leading-6 text-gray-900"> {{ $category->title }}
+            </p>
+        </div>
+    </button> --}}
+
 
     <ul role="list" class="divide-y divide-gray-100">
         @if (!empty($categories))
             @foreach ($categories as $category)
-                <li class="flex justify-between gap-x-6 p-6 py-5">
-                        <dialog id="myDialog">
-                            <div class="relative z-10" aria-labelledby="slide-over-title" role="dialog"
-                                aria-modal="true">
-
-                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                                    aria-hidden="true"></div>
-
-                                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                                    <div
-                                        class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                                        <div
-                                            class="relative transform overflow-hidden rounded-lg bg-blue text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                            <div class="bg-blue px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                                                <x-category :category="$category"></x-category>
-                                                <i id="closeDialog">X</i>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </dialog>
-                        <button id="openDialog">
-                            <div class="min-w-0 flex-auto">
-                                <p class="text-sm font-semibold leading-6 text-gray-900"> {{ $category->title }}
-                                </p>
-                            </div>
-                        </button>
-
-                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <div>
-                            <a href=""> edit </a>
-                            <button onclick="confirmDelete( {{ $category->id }} , '{{ $category->title }}' )"
-                                href=""> delete </button>
-                        </div>
-                    </div>
-                </li>
+                <x-category :category="$category"></x-category>
             @endforeach
         @else
             <h1> No items </h1>
@@ -80,36 +69,28 @@
     </ul>
 </body>
 <script>
-    const openButton = document.getElementById('openDialog');
-    const closeButton = document.getElementById('closeDialog');
-    const myDialog = document.getElementById('myDialog');
-    const openDelete = document.getElementById('openDelete');
-    const deleteDialog = document.getElementById('deleteDialog');
-    const cancelDelete = document.getElementById('cancelDelete');
 
-    const itemListContainer = document.getElementById('itemList');
-
-    // Show the modal dialog
-    openButton.addEventListener('click', () => {
-        myDialog.showModal();
-    });
 
     function confirmDelete(id, title) {
-        const isConfirmed = confirm("Are you sure you want to delete " + title + " ?");
+        if (confirm("Are you sure you want to delete " + title + " ?")) {
+            console.log(id);
+            fetch('{{ route('delete_category', ':id') }}'.replace(':id', id), {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            }).then(
+                location.reload(true)
+            )
 
-        if (isConfirmed) {
-            const json = {}
             console.log("success");
-
-        } else {
-            console.log("failure");
         }
-
     }
-    // Close the modal dialog
-    closeButton.addEventListener('click', () => {
-        myDialog.close();
-    });
 </script>
 
 </html>
